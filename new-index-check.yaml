@@ -1,0 +1,55 @@
+apiVersion: test
+kind: Deployment
+metadata:
+  name: name
+  namespace: name
+spec:
+  name: name
+  predictors:
+  - componentSpecs:
+    - spec:
+        nodeSelector:
+          name: name
+        tolerations:
+        - key: type
+          operator: Equal
+          value: test
+          effect: NoSchedule
+        containers:
+        - name: model
+          image: xyz
+          env:
+          - name: MODEL_IMAGE_TAG
+            value: tag
+          - name: ENV
+            value: new
+          - name: GUNICORN_WORKERS
+            value: '0'
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 240
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 200
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: '1'
+              memory: 8Gi
+            limits:
+              cpu: '4'
+              memory: 112Gi
+      
